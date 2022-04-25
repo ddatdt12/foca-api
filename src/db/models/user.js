@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
 		 */
 		static associate(models) {
 			this.hasMany(models.Order);
-			// define association here
+			this.hasMany(models.CartItem);
 		}
 		comparePassword = async (password) => {
 			const isMatch = await Utils.comparePassword(
@@ -35,6 +35,10 @@ module.exports = (sequelize) => {
 			password: { type: DataTypes.STRING, allowNull: false },
 			phoneNumber: {
 				type: DataTypes.STRING,
+			},
+			role: {
+				type: DataTypes.ENUM('ADMIN', 'USER'),
+				defaultValue: 'USER',
 			},
 			photoUrl: {
 				type: DataTypes.STRING(3000),

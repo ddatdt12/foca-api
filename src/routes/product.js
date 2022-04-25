@@ -1,10 +1,12 @@
 const express = require('express');
 
 const router = express.Router();
-const authController = require('../controllers/authController');
-const { createUserSchema } = require('../validator/user');
+const productController = require('../controllers/productController');
 
 module.exports = (app) => {
-	router.get('/', authController.login);
+	router
+		.route('/')
+		.get(productController.getAllProducts)
+		.post(productController.createProduct);
 	app.use('/api/products', router);
 };

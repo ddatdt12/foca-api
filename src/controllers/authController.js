@@ -21,6 +21,27 @@ const login = catchAsync(async (req, res, next) => {
 
 	createSendToken(user, 200, res);
 });
+//@desc         Auth
+//@route        GET /api/auth
+//@access       PUBLIC
+const authVerify = catchAsync(async (req, res, next) => {
+	res.status(200).json({ message: 'Auth success', data: req.user });
+});
+//@desc         update me
+//@route        POST /api/me
+//@access       PUBLIC
+const updateMe = catchAsync(async (req, res, next) => {
+	const user = await User.update(
+		{ ...req.body },
+		{
+			where: {
+				id: req.user.id,
+			},
+		}
+	);
+
+	createSendToken(user, 200, res);
+});
 
 //@desc        	Register
 //@route        POST /api/auth/login
@@ -52,7 +73,7 @@ const register = catchAsync(async (req, res, next) => {
 	createSendToken(newUser, 200, res);
 });
 const createSendToken = (user, statusCode, res) => {
-	const accessToken = signToken(user._id);
+	const accessToken = signToken(user.id);
 
 	res.status(statusCode).json({
 		accessToken,
@@ -66,4 +87,4 @@ const signToken = (id) => {
 	});
 };
 
-module.exports = { login, register };
+module.exports = { login, register, updateMe, authVerify };

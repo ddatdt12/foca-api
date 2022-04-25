@@ -2,39 +2,7 @@
 
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable('products', {
-			id: {
-				allowNull: false,
-				autoIncrement: true,
-				primaryKey: true,
-				type: Sequelize.INTEGER,
-			},
-			name: {
-				type: Sequelize.STRING,
-			},
-			price: {
-				type: Sequelize.STRING,
-			},
-			image: {
-				type: Sequelize.STRING,
-			},
-			decription: {
-				type: Sequelize.STRING,
-			},
-			type: {
-				allowNull: false,
-				type: Sequelize.ENUM('DRINK', 'FOOD'),
-			},
-			createdAt: {
-				allowNull: false,
-				type: Sequelize.DATE,
-			},
-			updatedAt: {
-				allowNull: false,
-				type: Sequelize.DATE,
-			},
-		});
-		await queryInterface.createTable('users', {
+		await queryInterface.createTable('user', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -55,6 +23,10 @@ module.exports = {
 			photoUrl: {
 				type: Sequelize.STRING(2400),
 			},
+			role: {
+				type: Sequelize.ENUM('ADMIN', 'USER'),
+				defaultValue: 'USER',
+			},
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,
@@ -64,7 +36,106 @@ module.exports = {
 				type: Sequelize.DATE,
 			},
 		});
-		await queryInterface.createTable('orders', {
+		await queryInterface.createTable('product', {
+			id: {
+				allowNull: false,
+				autoIncrement: true,
+				primaryKey: true,
+				type: Sequelize.INTEGER,
+			},
+			name: {
+				type: Sequelize.STRING,
+			},
+			price: {
+				type: Sequelize.STRING,
+			},
+			image: {
+				type: Sequelize.STRING,
+			},
+			description: {
+				type: Sequelize.STRING,
+			},
+			type: {
+				allowNull: false,
+				type: Sequelize.ENUM('DRINK', 'FOOD'),
+			},
+			createdAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			},
+			updatedAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			},
+		});
+
+		await queryInterface.createTable('order', {
+			id: {
+				allowNull: false,
+				autoIncrement: true,
+				primaryKey: true,
+				type: Sequelize.INTEGER,
+			},
+			buyerId: {
+				type: Sequelize.INTEGER,
+				references: {
+					model: 'user', // name of Target model
+					key: 'id', // key in Target model that we're referencing
+				},
+				allowNull: false,
+			},
+			totalPrice: {
+				type: Sequelize.INTEGER,
+			},
+			notes: Sequelize.STRING,
+			status: {
+				type: Sequelize.ENUM(
+					'PENDING',
+					'PROCESSED',
+					'COMPLETED',
+					'CANCELLED'
+				),
+				defaultValue: 'PENDING',
+			},
+			createdAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			},
+			updatedAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			},
+		});
+		await queryInterface.createTable('order_detail', {
+			orderId: {
+				type: Sequelize.INTEGER,
+				references: {
+					key: 'id',
+					model: 'order',
+				},
+				allowNull: false,
+				primaryKey: true,
+			},
+			productId: {
+				type: Sequelize.INTEGER,
+				references: {
+					key: 'id',
+					model: 'product',
+				},
+				primaryKey: true,
+			},
+			price: {
+				type: Sequelize.INTEGER,
+				validate: {
+					min: 0,
+				},
+			},
+			quantity: {
+				type: Sequelize.INTEGER,
+				min: 1,
+			},
+		});
+		await queryInterface.createTable('cart_item', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -74,27 +145,25 @@ module.exports = {
 			userId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: 'users', // name of Target model
+					model: 'user', // name of Target model
 					key: 'id', // key in Target model that we're referencing
 				},
-				onUpdate: 'CASCADE',
-				onDelete: 'SET NULL',
+				allowNull: false,
 			},
-			totalPrice: {
+			productId: {
 				type: Sequelize.INTEGER,
-			},
-			notes: Sequelize.STRING,
-			status: {
-				type: Sequelize.ENUM('PENDING', 'COMPLETED', 'CANCELLED'),
-				defaultValue: 'PENDING',
-			},
-			createAt: {
+				references: {
+					model: 'product', // name of Target model
+					key: 'id', // key in Target model that we're referencing
+				},
 				allowNull: false,
-				type: Sequelize.DATE,
 			},
-			updatedAt: {
+			quantity: {
+				type: Sequelize.INTEGER,
+				validate: {
+					min: 1,
+				},
 				allowNull: false,
-				type: Sequelize.DATE,
 			},
 		});
 	},

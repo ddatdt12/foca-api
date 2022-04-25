@@ -5,26 +5,54 @@ const catchAsync = require('../utils/catchAsync');
 //@route        POST /api/auth/login
 //@access       PUBLIC
 const getAllProducts = catchAsync(async (req, res) => {
-	// const prods = await Product.findAll();
+	const prods = await Product.findAll();
 	res.status(200).json({
 		message: 'Get all posts successfully',
-		data: [
-			{
-				name: 'Mic check',
-				price: 0,
-				image: 'Mic check',
-				description: 'Mic check',
-				type: 'Mic check',
-			},
-			{
-				name: 'Mic check 1',
-				price: 110,
-				image: 'Mic check1',
-				description: 'Mic check 1',
-				type: 'Mic check 1',
-			},
-		],
+		data: prods,
+	});
+});
+//@desc         Create new product
+//@route        POST /api/products
+//@access       PUBLIC
+const createProduct = catchAsync(async (req, res, next) => {
+	const prod = await Product.create({
+		...req.body,
+	});
+	res.status(200).json({
+		message: 'Create post successfully',
+		data: prod,
+	});
+});
+//@desc         Create new product
+//@route        POST /api/products
+//@access       PUBLIC
+const updateProduct = catchAsync(async (req, res, next) => {
+	const prod = await Product.create({
+		...req.body,
+	});
+	res.status(200).json({
+		message: 'Create post successfully',
+		data: prod,
+	});
+});
+//@desc         Create new product
+//@route        POST /api/products
+//@access       PUBLIC
+const deteteProduct = catchAsync(async (req, res) => {
+	const prod = await Product.destroy({
+		where: {
+			id: req.params.id,
+		},
+	});
+	res.status(200).json({
+		message: 'Create post successfully',
+		data: prod,
 	});
 });
 
-module.exports = { getAllProducts };
+module.exports = {
+	getAllProducts,
+	createProduct,
+	updateProduct,
+	deteteProduct,
+};

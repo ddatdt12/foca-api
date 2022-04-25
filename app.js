@@ -7,8 +7,9 @@ const globalErrorHandler = require('./src/middlewares/globalErrorHandler');
 const fs = require('fs');
 const path = require('path');
 const AppError = require('./src/utils/AppError');
+const associate = require('./src/db/models/association');
 require('./src/db/models');
-
+associate();
 const routesDirName = `${__dirname}/src/routes/`;
 //Config
 const app = express();
@@ -18,7 +19,6 @@ app.use(
 		credentials: true,
 	})
 );
-
 app.use(express.json());
 if (process.env.NODE_ENV !== 'production') {
 	app.use(morgan('dev'));

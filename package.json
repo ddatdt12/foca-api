@@ -8,7 +8,11 @@
 		"dev": "nodemon server.js",
 		"migration generate": "sequelize-cli model:generate",
 		"migration": "sequelize-cli db:migrate",
-		"migration:undo": "sequelize-cli db:migrate:undo"
+		"migration:undo": "sequelize-cli db:migrate:undo",
+		"seed:generate": "sequelize-cli seed:generate",
+		"seed": "sequelize-cli db:seed",
+		"seed:all": "sequelize-cli db:seed:all",
+		"seed:undo": "sequelize-cli db:seed:undo:all"
 	},
 	"devDependencies": {
 		"eslint": "^8.11.0",

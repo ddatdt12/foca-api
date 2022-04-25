@@ -9,16 +9,24 @@ module.exports = (sequelize) => {
 		 */
 		static associate(models) {
 			// define association here
-			this.belongsTo(models.User);
+			console.log('models', models);
+			this.belongsTo(models.User, { as: 'buyer' });
+			this.hasMany(models.OrderDetail, {
+				as: 'orderDetails',
+			});
 		}
 	}
 	Order.init(
 		{
-			userId: DataTypes.INTEGER,
 			totalPrice: DataTypes.INTEGER,
 			notes: DataTypes.STRING,
 			status: {
-				type: DataTypes.ENUM('PENDING', 'COMPLETED', 'CANCELLED'),
+				type: DataTypes.ENUM(
+					'PENDING',
+					'PROCCESSED',
+					'COMPLETED',
+					'CANCELLED'
+				),
 				defaultValue: 'PENDING',
 			},
 		},

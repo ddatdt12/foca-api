@@ -14,6 +14,9 @@ const sequelize = new Sequelize.Sequelize(
 		dialect: dbConfig.dialect,
 		dialectOptions: dbConfig.dialectOptions,
 		pool: dbConfig.pool,
+		define: {
+			freezeTableName: true,
+		},
 	}
 );
 // fs.readdirSync(__dirname)
@@ -53,4 +56,6 @@ db.Sequelize = Sequelize;
 db.User = require('./user')(sequelize);
 db.Product = require('./product')(sequelize);
 db.Order = require('./order')(sequelize);
+db.OrderDetail = require('./order_detail')(sequelize);
+db.CartItem = require('./cart_item')(sequelize);
 module.exports = db;
