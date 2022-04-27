@@ -4,6 +4,6 @@ const router = express.Router();
 
 const orderRoute = require('./order');
 module.exports = (app) => {
-	router.use('/orders', orderRoute);
+	router.use('/carts', orderRoute);
 	app.use('/api/buyer', router);
 };

@@ -2,9 +2,10 @@ const { Product } = require('../db/models');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 //@desc         FOR TESTING: Login = uid
-//@route        POST /api/auth/login
+//@route        POST /api/products
 //@access       PUBLIC
-const getAllProducts = catchAsync(async (req, res) => {
+const getAllProducts = catchAsync(async (req, res, next) => {
+	// return next(new AppError('This is a test error', 400));
 	const prods = await Product.findAll();
 	res.status(200).json({
 		message: 'Get all posts successfully',
@@ -23,7 +24,7 @@ const createProduct = catchAsync(async (req, res, next) => {
 		data: prod,
 	});
 });
-//@desc         Create new product
+//@desc         update product
 //@route        POST /api/products
 //@access       PUBLIC
 const updateProduct = catchAsync(async (req, res, next) => {
@@ -31,7 +32,7 @@ const updateProduct = catchAsync(async (req, res, next) => {
 		...req.body,
 	});
 	res.status(200).json({
-		message: 'Create post successfully',
+		message: 'update post successfully',
 		data: prod,
 	});
 });
@@ -45,7 +46,7 @@ const deteteProduct = catchAsync(async (req, res) => {
 		},
 	});
 	res.status(200).json({
-		message: 'Create post successfully',
+		message: 'delete product successfully',
 		data: prod,
 	});
 });

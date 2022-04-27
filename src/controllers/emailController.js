@@ -26,7 +26,7 @@ const sendEmailVerification = catchAsync(async (req, res, next) => {
 
 	const email = `${username}@gm.uit.edu.vn`;
 	const code = Math.floor(Math.random() * 10000);
-	VerificationCodeHashMap.set(email, code);
+	VerificationCodeHashMap.set(username, code);
 	console.log('VerificationCodeHashMap : ', VerificationCodeHashMap);
 	await EmailService.sendVerificationEmail({
 		email,
@@ -39,11 +39,11 @@ const sendEmailVerification = catchAsync(async (req, res, next) => {
 });
 
 const checkVerificationCode = catchAsync(async (req, res, next) => {
-	const { email, code } = req.body;
+	const { username, code } = req.body;
 
 	if (
-		!VerificationCodeHashMap.has(email) ||
-		VerificationCodeHashMap.get(email)?.toString() !== code.toString()
+		!VerificationCodeHashMap.has(username) ||
+		VerificationCodeHashMap.get(username)?.toString() !== code.toString()
 	) {
 		return next(new AppError('Wrong code', 400));
 	}

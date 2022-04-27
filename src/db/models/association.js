@@ -7,7 +7,7 @@ const associate = () => {
 	Order.belongsTo(User, { as: 'buyer' });
 	User.hasMany(Order, { as: 'orders', foreignKey: 'buyerId' });
 
-	//Order detail - Product - Order
+	//Order detail - 1:1 -  Product - 1:n - Order
 	OrderDetail.belongsTo(Order, {
 		as: 'order',
 	});
@@ -22,7 +22,7 @@ const associate = () => {
 		as: 'orderDetails',
 	});
 
-	//User 1:n CartItem
+	//User - 1:n - CartItem
 	User.hasMany(CartItem, { as: 'cartItems' });
 	CartItem.belongsTo(User, { as: 'user' });
 	CartItem.belongsTo(Product, { as: 'product' });

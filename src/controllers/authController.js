@@ -9,6 +9,7 @@ const { User } = require('../db/models');
 const login = catchAsync(async (req, res, next) => {
 	const { username, password } = req.body;
 
+	console.log('login', req.body);
 	const user = await User.findOne({
 		where: {
 			username: username ?? null,
@@ -19,7 +20,7 @@ const login = catchAsync(async (req, res, next) => {
 		return next(new AppError('Username or password is wrong', 404));
 	}
 
-	createSendToken(user, 200, res);
+	createSendToken(user.get(), 200, res);
 });
 //@desc         Auth
 //@route        GET /api/auth
@@ -40,7 +41,7 @@ const updateMe = catchAsync(async (req, res, next) => {
 		}
 	);
 
-	createSendToken(user, 200, res);
+	createSendToken(user.get(), 200, res);
 });
 
 //@desc        	Register
@@ -70,14 +71,14 @@ const register = catchAsync(async (req, res, next) => {
 		photoUrl,
 	});
 	newUser.password = undefined;
-	createSendToken(newUser, 200, res);
+	createSendToken(newUser.get(), 200, res);
 });
 const createSendToken = (user, statusCode, res) => {
 	const accessToken = signToken(user.id);
 
 	res.status(statusCode).json({
-		accessToken,
-		user,
+		statusCode,
+		data: { ...user, accessToken },
 	});
 };
 
