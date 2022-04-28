@@ -25,7 +25,7 @@ const sendEmailVerification = catchAsync(async (req, res, next) => {
 	}
 
 	const email = `${username}@gm.uit.edu.vn`;
-	const code = Math.floor(Math.random() * 10000);
+	const code = Math.floor(1000 + Math.random() * 9000);
 	VerificationCodeHashMap.set(username, code);
 	console.log('VerificationCodeHashMap : ', VerificationCodeHashMap);
 	await EmailService.sendVerificationEmail({
