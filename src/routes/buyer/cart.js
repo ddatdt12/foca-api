@@ -1,18 +1,15 @@
 const express = require('express');
 
 const router = express.Router();
-const orderController = require('../../controllers/orderController');
-const { protect } = require('../../middlewares/auth');
-const { createOrderSchema } = require('../../validator/order');
+const cartController = require('../../controllers/cartController');
 
-router.use(protect);
 router
 	.route('/')
-	.get(orderController.getOrders)
-	.post(createOrderSchema, orderController.createOrder);
+	.get(cartController.getCart)
+	.post(cartController.createCartItem);
 router
 	.route('/:id')
-	.get(orderController.getOrderDetail)
-	.put(orderController.updateOrderStatus);
+	.put(cartController.updateCartItem)
+	.delete(cartController.deleteCartItem);
 
 module.exports = router;

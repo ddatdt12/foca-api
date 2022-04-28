@@ -34,7 +34,9 @@ const sendEmailVerification = catchAsync(async (req, res, next) => {
 		code,
 	});
 	res.status(200).json({
+		statusCode: 200,
 		message: 'send email successfully',
+		data: null,
 	});
 });
 

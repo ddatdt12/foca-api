@@ -4,7 +4,7 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const { updateUserSchema } = require('../validator/user');
 const { protect } = require('../middlewares/auth');
-const cartRoute = require('./seller/cart');
+const cartRoute = require('./buyer/cart');
 
 module.exports = (app) => {
 	router.use(protect);
