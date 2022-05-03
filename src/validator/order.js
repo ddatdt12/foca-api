@@ -2,6 +2,7 @@ const Joi = require('joi');
 const { validateRequest } = require('.');
 
 function createOrderSchema(req, res, next) {
+	console.log('middleware createOrderSchema');
 	let detailSchema = Joi.object({
 		productId: Joi.number().required(),
 		price: Joi.number().required(),

@@ -6,6 +6,7 @@ const filterQuery = (req, res, next) => {
 	console.log('filterQuery', req.query);
 	let schema = Joi.object({
 		type: Joi.string().valid('DRINK', 'FOOD'),
+		limit: Joi.string().default(10),
 	}).error((errors) => {
 		console.log('Errors joi: ', errors);
 		errors.forEach((err) => {

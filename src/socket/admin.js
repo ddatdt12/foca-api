@@ -1,4 +1,4 @@
-const { Room } = require('../db/models');
+const { Room, Message } = require('../db/models');
 const getRooms = async () => {
 	const rooms = await Room.findAll({
 		include: ['members'],
@@ -8,4 +8,16 @@ const getRooms = async () => {
 	return rooms;
 };
 
-module.exports = { getRooms };
+const getMessages = async (roomId) => {
+	const rooms = await Message.findAll({
+		where: {
+			roomId,
+		},
+		order: [['createdAt', 'ASC']],
+		raw: true,
+	});
+
+	return rooms;
+};
+
+module.exports = { getRooms, getMessages };

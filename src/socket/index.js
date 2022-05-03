@@ -1,6 +1,6 @@
 const { ValidationError } = require('sequelize');
 const { Server } = require('socket.io');
-const { getRooms } = require('./admin');
+const { getRooms, getMessages } = require('./admin');
 const {
 	getMessagesWithAdmin,
 	sendMessage,
@@ -35,6 +35,25 @@ const ConnectSocket = (server) => {
 		socket.on('join_room', (data) => {
 			console.log('Data ', data);
 			socket.emit('send_message', data);
+		});
+		socket.on('get_rooms', async (cb) => {
+			try {
+				const rooms = await getRooms();
+				typeof cb === 'function' && cb({ data: rooms, error: null });
+			} catch (error) {
+				typeof cb === 'function' &&
+					cb({ data: null, error: error.message });
+			}
+		});
+		socket.on('get_messages', async (roomId, cb) => {
+			try {
+				const messages = await getMessages(roomId);
+				typeof cb === 'function' && cb({ data: messages, error: null });
+			} catch (error) {
+				console.log('Error get_messages: ', error);
+				typeof cb === 'function' &&
+					cb({ data: null, error: error.message });
+			}
 		});
 
 		socket.on('get_room_with_admin', async (cb) => {
@@ -93,25 +112,24 @@ const testFunction = async () => {
 
 		try {
 			const rooms = await getRooms();
-			console.log('Rooms ', JSON.stringify(rooms));
 		} catch (error) {
 			console.log('Error getRooms:', error);
 		}
-		getRoomWithAdmin(3)
-			.then((data) => {
-				console.log('getRoomWithAdmin', JSON.stringify(data, null, 2));
-			})
-			.catch((err) => {
-				console.log('Error get messages with admin', err);
-				if (err instanceof ValidationError) {
-					const errorMessage = Object.values(err.errors)
-						.map((el) => {
-							return el;
-						})
-						.join(' \n');
-					console.log('Error message', errorMessage);
-				}
-			});
+		// getRoomWithAdmin(3)
+		// 	.then((data) => {
+		// 		console.log('getRoomWithAdmin', JSON.stringify(data, null, 2));
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log('Error get messages with admin', err);
+		// 		if (err instanceof ValidationError) {
+		// 			const errorMessage = Object.values(err.errors)
+		// 				.map((el) => {
+		// 					return el;
+		// 				})
+		// 				.join(' \n');
+		// 			console.log('Error message', errorMessage);
+		// 		}
+		// 	});
 	} catch (error) {
 		console.log('Error', error);
 	}
