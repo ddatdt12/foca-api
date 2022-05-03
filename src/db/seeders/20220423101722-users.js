@@ -19,12 +19,13 @@ module.exports = {
 					{
 						firstName: 'Admin',
 						lastName: 'Đạt',
-						username: 'admin',
+						username: '00000000',
 						password:
 							'$2b$10$dxthlZTi/uIs8e8GlNiKt.JE9W5dGx805zHHu04WfcbW2RpK.xEP6',
 						phoneNumber: '0987582042',
 						photoUrl:
 							'https://firebasestorage.googleapis.com/v0/b/hifi-3ab1d.appspot.com/o/default.jpg?alt=media&token=ed84b493-6c5b-4a1e-ab6e-0b57c4da77af',
+						role: 'ADMIN',
 						createdAt: new Date(),
 						updatedAt: new Date(),
 					},

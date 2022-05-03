@@ -1,27 +1,34 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-
-const MessageSchema = new Schema(
-	{
-		text: String,
-		sender: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-		},
-		isSeen: {
-			type: Boolean,
-			default: false,
-		},
-		conversation: {
-			type: Schema.Types.ObjectId,
-			ref: 'Conversation',
-		},
-	},
-	{
-		timestamps: true,
+'use strict';
+const { Model, DataTypes } = require('sequelize');
+module.exports = (sequelize) => {
+	class Message extends Model {
+		/**
+		 * Helper method for defining associations.
+		 * This method is not a part of Sequelize lifecycle.
+		 * The `models/index` file will call this method automatically.
+		 */
+		static associate(models) {}
 	}
-);
-MessageSchema.post('find', function (result) {
-	console.log('find() returned ' + JSON.stringify(result));
-});
-module.exports = mongoose.model('Message', MessageSchema);
+	Message.init(
+		{
+			text: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			senderId: {
+				type: DataTypes.INTEGER,
+				references: {
+					key: 'id',
+					model: 'user',
+				},
+				allowNull: false,
+			},
+		},
+		{
+			sequelize,
+			modelName: 'message',
+			timestamps: true,
+		}
+	);
+	return Message;
+};

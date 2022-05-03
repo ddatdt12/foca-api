@@ -58,4 +58,7 @@ db.Product = require('./product')(sequelize);
 db.Order = require('./order')(sequelize);
 db.OrderDetail = require('./order_detail')(sequelize);
 db.CartItem = require('./cart_item')(sequelize);
+db.Room = require('./room')(sequelize);
+db.Message = require('./message')(sequelize);
+db.RoomMember = require('./room_member')(sequelize);
 module.exports = db;

@@ -1,11 +1,10 @@
 const { sequelize, Order, OrderDetail } = require('../db/models');
-const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 //@desc         FOR TESTING: Login = uid
 //@route        POST /api/auth/login
 //@access       PUBLIC
 const getOrders = catchAsync(async (req, res) => {
-	const prods = await Order.findAll({
+	const orders = await Order.findAll({
 		where: {
 			buyerId: req.user.id,
 		},
@@ -18,14 +17,14 @@ const getOrders = catchAsync(async (req, res) => {
 	});
 	res.status(200).json({
 		message: 'Get all orders successfully',
-		data: prods,
+		data: orders,
 	});
 });
 //@desc         FOR TESTING: Login = uid
 //@route        POST /api/auth/login
 //@access       PUBLIC
 const getOrderDetail = catchAsync(async (req, res) => {
-	const prods = await Order.findByPk(req.params.id, {
+	const order = await Order.findByPk(req.params.id, {
 		include: [
 			'buyer',
 			{
@@ -36,7 +35,7 @@ const getOrderDetail = catchAsync(async (req, res) => {
 	});
 	res.status(200).json({
 		message: 'Get post detail successfully',
-		data: prods,
+		data: order,
 	});
 });
 //@desc         Create new product
@@ -55,7 +54,7 @@ const createOrder = catchAsync(async (req, res, next) => {
 		const orderDetails = await OrderDetail.bulkCreate(
 			req.body.orderDetails.map((p) => ({
 				...p,
-				orderId: 6,
+				orderId: order.id,
 			})),
 			{ transaction: t }
 		);

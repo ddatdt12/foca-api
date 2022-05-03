@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const globalErrorHandler = require('./src/middlewares/globalErrorHandler');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const AppError = require('./src/utils/AppError');
 const associate = require('./src/db/models/association');
 require('./src/db/models');
@@ -13,6 +14,7 @@ associate();
 const routesDirName = `${__dirname}/src/routes/`;
 //Config
 const app = express();
+
 app.use(
 	cors({
 		origin: true,
