@@ -12,6 +12,10 @@ module.exports = {
 				type: Sequelize.JSONB,
 				allowNull: true,
 			},
+			isSeen: {
+				type: Sequelize.BOOLEAN,
+				defaultValue: false,
+			},
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,

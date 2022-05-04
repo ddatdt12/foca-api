@@ -9,6 +9,10 @@ module.exports = (sequelize) => {
 			lastMessage: {
 				type: DataTypes.JSONB,
 			},
+			isSeen: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			},
 		},
 		{
 			sequelize,

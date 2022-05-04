@@ -1,4 +1,4 @@
-const { Room, Message } = require('../db/models');
+const { Room, Message, sequelize } = require('../db/models');
 const getRooms = async () => {
 	const rooms = await Room.findAll({
 		include: ['members'],
@@ -19,5 +19,19 @@ const getMessages = async (roomId) => {
 
 	return rooms;
 };
+const seenMessage = async (roomId) => {
+	await sequelize.transaction(async (t) => {
+		const room = await Room.findByPk(roomId, {
+			lock: true,
+			transaction: t,
+		});
+		if (room && room.isSeen === false) {
+			room.isSeen = true;
+			await room.save({
+				transaction: t,
+			});
+		}
+	});
+};
 
-module.exports = { getRooms, getMessages };
+module.exports = { getRooms, getMessages, seenMessage };

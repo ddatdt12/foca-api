@@ -73,19 +73,20 @@ const sendMessage = async (newMessage) => {
 
 		const returnedMessage = message.get();
 
+		console.log('before fin Room');
+
 		const room = await Room.findByPk(newMessage.roomId, {
-			include: [
-				{
-					association: 'members',
-					attributes: ['id'],
-				},
-			],
+			transaction: t,
+			lock: true,
 		});
 
-		if (!room.members.map((m) => m.id).includes(newMessage.senderId)) {
+		console.log(' check Room', room);
+		const members = await room.getMembers();
+		if (!members.map((m) => m.id).includes(newMessage.senderId)) {
 			throw new Error('User not in room');
 		}
 		room.lastMessage = message;
+		room.isSeen = false;
 		await room.save({
 			transaction: t,
 		});

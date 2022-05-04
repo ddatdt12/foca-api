@@ -1,6 +1,6 @@
 const { ValidationError } = require('sequelize');
 const { Server } = require('socket.io');
-const { getRooms, getMessages } = require('./admin');
+const { getRooms, getMessages, seenMessage } = require('./admin');
 const {
 	getMessagesWithAdmin,
 	sendMessage,
@@ -83,6 +83,13 @@ const ConnectSocket = (server) => {
 				cb({ data: null, error });
 			}
 		});
+		socket.on('seen_new_message', async (roomId) => {
+			try {
+				await seenMessage(roomId);
+			} catch (error) {
+				console.log('Error seen_new_message', error);
+			}
+		});
 
 		socket.on('disconnect', () => {
 			console.log('Client disconnected: ' + socket.userId);
@@ -105,17 +112,13 @@ const sort = (array) => {
 
 const testFunction = async () => {
 	try {
-		// const message = await sendMessage({
-		// 	roomId: 8,
-		// 	senderId: 3,
-		// 	text: 'Testtt  2 breadsticks',
-		// });
+		const message = await sendMessage({
+			roomId: 8,
+			senderId: 3,
+			text: 'Testtt  2',
+		});
 
-		try {
-			const rooms = await getRooms();
-		} catch (error) {
-			console.log('Error getRooms:', error);
-		}
+		await seenMessage(8);
 		// getRoomWithAdmin(3)
 		// 	.then((data) => {
 		// 		console.log('getRoomWithAdmin', JSON.stringify(data, null, 2));
