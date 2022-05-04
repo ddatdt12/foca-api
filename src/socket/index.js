@@ -76,6 +76,7 @@ const ConnectSocket = (server) => {
 							io.to(member.id).emit('received_message', message);
 						}
 					});
+				console.log('members', members);
 				cb({ data: message, error: null });
 			} catch (error) {
 				console.log('Error send message', error);

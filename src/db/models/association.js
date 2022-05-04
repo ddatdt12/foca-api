@@ -7,6 +7,7 @@ const {
 	Room,
 	Message,
 	RoomMember,
+	InterestProduct,
 } = require('.');
 
 const associate = () => {
@@ -54,14 +55,29 @@ const associate = () => {
 	Room.belongsToMany(User, { through: RoomMember, as: 'members' });
 
 	// Product 1:n - InterestProduct - 1:n - User
+	// // Setup a One-to-Many relationship between User and Grant
+	// User.hasMany(InterestProduct, {
+	// 	as: 'interestedProducts',
+	// });
+	// InterestProduct.belongsTo(User);
+
+	// // Also setup a One-to-Many relationship between Profile and Grant
+	// Product.hasMany(InterestProduct, {
+	// 	through: InterestProduct,
+	// 	as: 'users',
+	// 	foreignKey: 'productId',
+	// });
+	// InterestProduct.belongsTo(Product);
 
 	User.belongsToMany(Product, {
-		through: 'interest_product',
+		through: InterestProduct,
 		as: 'interestedProducts',
+		foreignKey: 'userId',
 	});
 	Product.belongsToMany(User, {
-		through: 'interest_product',
+		through: InterestProduct,
 		as: 'users',
+		foreignKey: 'productId',
 	});
 };
 

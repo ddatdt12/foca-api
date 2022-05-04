@@ -20,8 +20,6 @@ const EmailService = {
 			html: `<p>Account verification code: ${options.code}</p>`,
 		};
 
-		console.log('Options: ', mailOptions);
-		// 3) Actually send the email
 		const res = await transporter.sendMail(mailOptions);
 		console.log(res);
 	},

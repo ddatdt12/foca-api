@@ -1,8 +1,8 @@
-const { CartItem } = require('../db/models');
-const AppError = require('../utils/AppError');
-const catchAsync = require('../utils/catchAsync');
+const { CartItem } = require('../../db/models');
+const AppError = require('../../utils/AppError');
+const catchAsync = require('../../utils/catchAsync');
 //@desc         get my cart
-//@route        GET /api/me/cart
+//@route        GET /api/me/cart-items
 //@access       PRIVATE
 const getCart = catchAsync(async (req, res) => {
 	const cart = await CartItem.findAll({
@@ -17,7 +17,7 @@ const getCart = catchAsync(async (req, res) => {
 	});
 });
 //@desc         create cart item
-//@route        POST /api/me/cart
+//@route        POST /api/me/cart-items
 //@access       PRIVATE
 const createCartItem = catchAsync(async (req, res) => {
 	const { productId, quantity } = req.body;
@@ -50,7 +50,7 @@ const createCartItem = catchAsync(async (req, res) => {
 	});
 });
 //@desc         Update cart item
-//@route        PUT /api/me/cart/:id
+//@route        PUT /api/me/cart-items/:id
 //@access       PUBLIC
 const updateCartItem = catchAsync(async (req, res, next) => {
 	const { quantity } = req.body;
@@ -78,7 +78,7 @@ const updateCartItem = catchAsync(async (req, res, next) => {
 });
 
 //@desc         delete cart item
-//@route        DELETE /api/me/cart/:id
+//@route        DELETE /api/me/cart-items/:id
 //@access       PUBLIC
 const deleteCartItem = catchAsync(async (req, res, next) => {
 	console.log('Order: ', req.body);

@@ -17,7 +17,15 @@ module.exports = (sequelize) => {
 		{
 			userId: DataTypes.INTEGER,
 			productId: DataTypes.INTEGER,
-			text: DataTypes.STRING,
+			orderId: DataTypes.INTEGER,
+			content: DataTypes.STRING,
+			rating: {
+				type: DataTypes.INTEGER,
+				validate: {
+					min: 0,
+					max: 5,
+				},
+			},
 		},
 		{
 			sequelize,

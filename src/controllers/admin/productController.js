@@ -1,6 +1,5 @@
-const { Product, Sequelize } = require('../db/models');
-const AppError = require('../utils/AppError');
-const catchAsync = require('../utils/catchAsync');
+const { Product, Sequelize } = require('../../db/models');
+const catchAsync = require('../../utils/catchAsync');
 
 const cleanupQuery = (query) => {
 	//Copy req.query
@@ -48,6 +47,48 @@ const getAllProducts = catchAsync(async (req, res, next) => {
 	});
 });
 
+//@desc         Create new product
+//@route        POST /api/products
+//@access       PUBLIC
+const createProduct = catchAsync(async (req, res, next) => {
+	const prod = await Product.create({
+		...req.body,
+	});
+	res.status(200).json({
+		message: 'Create product successfully',
+		data: prod,
+	});
+});
+//@desc         update product
+//@route        POST /api/products
+//@access       PUBLIC
+const updateProduct = catchAsync(async (req, res, next) => {
+	const prod = await Product.create({
+		...req.body,
+	});
+	res.status(200).json({
+		message: 'update product successfully',
+		data: prod,
+	});
+});
+//@desc         Create new product
+//@route        POST /api/products
+//@access       PUBLIC
+const deteteProduct = catchAsync(async (req, res) => {
+	const prod = await Product.destroy({
+		where: {
+			id: req.params.id,
+		},
+	});
+	res.status(200).json({
+		message: 'delete product successfully',
+		data: prod,
+	});
+});
+
 module.exports = {
 	getAllProducts,
+	createProduct,
+	updateProduct,
+	deteteProduct,
 };

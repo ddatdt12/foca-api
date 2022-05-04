@@ -61,4 +61,5 @@ db.CartItem = require('./cart_item')(sequelize);
 db.Room = require('./room')(sequelize);
 db.Message = require('./message')(sequelize);
 db.RoomMember = require('./room_member')(sequelize);
+db.InterestProduct = require('./interest_product')(sequelize);
 module.exports = db;

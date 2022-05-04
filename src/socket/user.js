@@ -1,4 +1,3 @@
-const { Op } = require('sequelize');
 const { Message, User, Room, RoomMember, sequelize } = require('../db/models');
 const getRoomWithAdmin = async (userId) => {
 	const admin = await User.findOne({
@@ -53,7 +52,11 @@ const getRoomWithAdmin = async (userId) => {
 const getRoomMembers = async (roomId) => {
 	const room = await Room.findByPk(roomId);
 
-	return room?.getMembers ?? [];
+	return (
+		room?.getMembers({
+			raw: true,
+		}) ?? []
+	);
 };
 
 const sendMessage = async (newMessage) => {

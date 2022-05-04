@@ -2,7 +2,7 @@
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable(
-			'interest_product',
+			'review',
 			{
 				id: {
 					allowNull: false,
@@ -34,17 +34,10 @@ module.exports = {
 					allowNull: false,
 					type: Sequelize.DATE,
 				},
-			},
-			{
-				uniqueKeys: {
-					interest_product_unique: {
-						fields: ['productId', 'userId'],
-					},
-				},
 			}
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable('interest_product');
+		await queryInterface.dropTable('review');
 	},
 };
