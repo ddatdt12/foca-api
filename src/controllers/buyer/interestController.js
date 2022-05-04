@@ -35,6 +35,7 @@ const addInterestedProduct = catchAsync(async (req, res, next) => {
 		data: null,
 	});
 });
+
 //@desc         delete interested products
 //@route        Delete /api/me/interested-products/:id
 //@access       PUBLIC
