@@ -1,6 +1,11 @@
 const { ValidationError } = require('sequelize');
 const { Server } = require('socket.io');
-const { getRooms, getMessages, seenMessage } = require('./admin');
+const {
+	getRooms,
+	getMessages,
+	seenMessage,
+	getNotSeenRooms,
+} = require('./admin');
 const {
 	getMessagesWithAdmin,
 	sendMessage,
@@ -55,6 +60,15 @@ const ConnectSocket = (server) => {
 					cb({ data: null, error: error.message });
 			}
 		});
+		socket.on('get_not_seen_conversations', async (roomId, cb) => {
+			try {
+				const notSeenRoomIds = await getNotSeenRooms();
+				typeof cb === 'function' && cb(notSeenRoomIds);
+			} catch (error) {
+				console.log('Error get_not_seen_conversations: ', error);
+				typeof cb === 'function' && cb([]);
+			}
+		});
 
 		socket.on('get_room_with_admin', async (cb) => {
 			try {
@@ -97,7 +111,7 @@ const ConnectSocket = (server) => {
 			console.log('Client disconnected: ' + socket.userId);
 		});
 	});
-	// testFunction();
+	testFunction();
 };
 
 const sort = (array) => {
@@ -114,13 +128,15 @@ const sort = (array) => {
 
 const testFunction = async () => {
 	try {
-		const message = await sendMessage({
-			roomId: 8,
-			senderId: 3,
-			text: 'Testtt  2',
-		});
+		const notSeenRoomIds = await getNotSeenRooms();
+		console.log('notSeenRoomIds: ', notSeenRoomIds);
+		// const message = await sendMessage({
+		// 	roomId: 8,
+		// 	senderId: 3,
+		// 	text: 'Testtt  2',
+		// });
 
-		await seenMessage(8);
+		// await seenMessage(8);
 		// getRoomWithAdmin(3)
 		// 	.then((data) => {
 		// 		console.log('getRoomWithAdmin', JSON.stringify(data, null, 2));
