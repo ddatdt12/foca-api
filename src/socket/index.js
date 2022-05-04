@@ -60,9 +60,10 @@ const ConnectSocket = (server) => {
 					cb({ data: null, error: error.message });
 			}
 		});
-		socket.on('get_not_seen_conversations', async (roomId, cb) => {
+		socket.on('get_not_seen_conversations', async (cb) => {
 			try {
 				const notSeenRoomIds = await getNotSeenRooms();
+				console.log('get_not_seen_conversations: ', notSeenRoomIds);
 				typeof cb === 'function' && cb(notSeenRoomIds);
 			} catch (error) {
 				console.log('Error get_not_seen_conversations: ', error);
