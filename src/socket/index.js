@@ -83,10 +83,12 @@ const ConnectSocket = (server) => {
 				cb({ data: null, error });
 			}
 		});
-		socket.on('seen_new_message', async (roomId) => {
+		socket.on('seen_new_message', async (roomId, cb) => {
 			try {
 				await seenMessage(roomId);
+				cb(true);
 			} catch (error) {
+				cb(false);
 				console.log('Error seen_new_message', error);
 			}
 		});
