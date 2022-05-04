@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const InterestProdController = require('../../controllers/buyer/InterestController');
+const InterestProdController = require('../../controllers/buyer/interestController');
 
 router
 	.route('/')
