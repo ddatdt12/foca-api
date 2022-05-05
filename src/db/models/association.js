@@ -8,6 +8,7 @@ const {
 	Message,
 	RoomMember,
 	InterestProduct,
+	Review,
 } = require('.');
 
 const associate = () => {
@@ -55,20 +56,6 @@ const associate = () => {
 	Room.belongsToMany(User, { through: RoomMember, as: 'members' });
 
 	// Product 1:n - InterestProduct - 1:n - User
-	// // Setup a One-to-Many relationship between User and Grant
-	// User.hasMany(InterestProduct, {
-	// 	as: 'interestedProducts',
-	// });
-	// InterestProduct.belongsTo(User);
-
-	// // Also setup a One-to-Many relationship between Profile and Grant
-	// Product.hasMany(InterestProduct, {
-	// 	through: InterestProduct,
-	// 	as: 'users',
-	// 	foreignKey: 'productId',
-	// });
-	// InterestProduct.belongsTo(Product);
-
 	User.belongsToMany(Product, {
 		through: InterestProduct,
 		as: 'interestedProducts',
@@ -79,6 +66,14 @@ const associate = () => {
 		as: 'users',
 		foreignKey: 'productId',
 	});
+
+	//Review - 1:1 - OrderDetail
+	OrderDetail.hasOne(Review, { as: 'review', foreignKey: 'orderDetailId' });
+	Review.belongsTo(OrderDetail, {
+		as: 'orderDetail',
+		foreignKey: 'orderDetailId',
+	});
+	Review.belongsTo(User, { as: 'user' });
 };
 
 module.exports = associate;

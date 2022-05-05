@@ -2,11 +2,11 @@ const express = require('express');
 
 const router = express.Router();
 const productController = require('../../controllers/admin/productController');
-const { filterQuery } = require('../../validator/query');
+const { filterGetProductsQuery } = require('../../validator/query');
 
 router
 	.route('/')
-	.get(filterQuery, productController.getAllProducts)
+	.get(filterGetProductsQuery, productController.getAllProducts)
 	.post(productController.createProduct);
 
 // router

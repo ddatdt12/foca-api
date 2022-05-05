@@ -1,7 +1,8 @@
-const { sequelize, Order, OrderDetail } = require('../db/models');
-const catchAsync = require('../utils/catchAsync');
-//@desc         FOR TESTING: Login = uid
-//@route        POST /api/auth/login
+const { sequelize, Order, OrderDetail } = require('../../db/models');
+const catchAsync = require('../../utils/catchAsync');
+
+//@desc         get orders
+//@route        POST GET /api/orders
 //@access       PUBLIC
 const getOrders = catchAsync(async (req, res) => {
 	const orders = await Order.findAll({
@@ -20,11 +21,35 @@ const getOrders = catchAsync(async (req, res) => {
 		data: orders,
 	});
 });
-//@desc         FOR TESTING: Login = uid
-//@route        POST /api/auth/login
+
+//@desc         get orders
+//@route        POST GET /api/orders
+//@access       PUBLIC
+const getRecentOrders = catchAsync(async (req, res) => {
+	const orders = await Order.findAll({
+		where: {
+			buyerId: req.user.id,
+		},
+		order: [['createdAt', 'DESC']],
+		limit: 5,
+		include: [
+			{
+				association: 'orderDetails',
+				include: ['product'],
+			},
+		],
+	});
+	res.status(200).json({
+		message: 'Get all orders successfully',
+		data: orders,
+	});
+});
+
+//@desc         get order detail
+//@route        GET /api/orders/:id
 //@access       PUBLIC
 const getOrderDetail = catchAsync(async (req, res) => {
-	const order = await Order.findByPk(req.params.id, {
+	const order = await Order.findByPk(req.params.orderId, {
 		include: [
 			'buyer',
 			{
@@ -38,14 +63,20 @@ const getOrderDetail = catchAsync(async (req, res) => {
 		data: order,
 	});
 });
-//@desc         Create new product
-//@route        POST /api/products
+
+//@desc         Create order
+//@route        POST /api/orders
 //@access       PUBLIC
 const createOrder = catchAsync(async (req, res, next) => {
+	const totalPrice = req.body.orderDetails.reduce(
+		(acc, cur) => acc + cur.price * cur.quantity,
+		0
+	);
 	const result = await sequelize.transaction(async (t) => {
 		const order = await Order.create(
 			{
 				...req.body,
+				totalPrice,
 				buyerId: req.user.id,
 			},
 			{ transaction: t }
@@ -67,8 +98,9 @@ const createOrder = catchAsync(async (req, res, next) => {
 		data: result,
 	});
 });
-//@desc         Create new product
-//@route        POST /api/products
+
+//@desc         Update order status
+//@route        POST /api/orders/:orderId
 //@access       PUBLIC
 const updateOrderStatus = catchAsync(async (req, res, next) => {
 	const { status } = req.body;
@@ -76,7 +108,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 		{ status },
 		{
 			where: {
-				id: req.params.id,
+				id: req.params.orderId,
 			},
 		}
 	);
@@ -86,4 +118,10 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 	});
 });
 
-module.exports = { getOrders, getOrderDetail, updateOrderStatus, createOrder };
+module.exports = {
+	getOrders,
+	getRecentOrders,
+	getOrderDetail,
+	updateOrderStatus,
+	createOrder,
+};

@@ -11,8 +11,7 @@ function createOrderSchema(req, res, next) {
 
 	const schema = Joi.object()
 		.keys({
-			totalPrice: Joi.number().required(),
-			notes: Joi.string().required(),
+			notes: Joi.string(),
 			orderDetails: Joi.array().items(detailSchema).required(),
 		})
 		.error((errors) => {
@@ -37,19 +36,19 @@ function createOrderSchema(req, res, next) {
 	validateRequest(req, next, schema);
 }
 
-function updateUserSchema(req, res, next) {
+function createReviewsForOrderValidator(req, res, next) {
+	const reviewSchema = Joi.object().keys({
+		orderDetailId: Joi.number().required(),
+		rating: Joi.number().integer().min(1).max(5).required(),
+		content: Joi.string(),
+	});
 	const schema = Joi.object().keys({
-		username: Joi.string().required(),
-		firstName: Joi.string().required(),
-		lastName: Joi.string().required(),
-		phoneNumber: Joi.string().email().required(),
-		photoUrl: Joi.string().uri().required(),
-		password: Joi.string().min(6).required(),
-		confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+		reviews: Joi.array().items(reviewSchema).required(),
 	});
 	validateRequest(req, next, schema);
 }
 
 module.exports = {
 	createOrderSchema,
+	createReviewsForOrderValidator,
 };

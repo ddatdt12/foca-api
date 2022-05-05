@@ -1,16 +1,20 @@
 const express = require('express');
 
 const router = express.Router();
-const orderController = require('../../controllers/orderController');
-const { protect } = require('../../middlewares/auth');
+const reviewRoute = require('./review');
+const orderController = require('../../controllers/buyer/orderController');
 const { createOrderSchema } = require('../../validator/order');
+const { filterGetOrdersQuery } = require('../../validator/query');
 
+router.use('/:orderId/reviews', reviewRoute);
+
+router.route('/recent').get(orderController.getRecentOrders);
 router
 	.route('/')
-	.get(orderController.getOrders)
+	.get(filterGetOrdersQuery, orderController.getOrders)
 	.post(createOrderSchema, orderController.createOrder);
 router
-	.route('/:id')
+	.route('/:orderId')
 	.get(orderController.getOrderDetail)
 	.put(orderController.updateOrderStatus);
 

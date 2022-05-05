@@ -18,6 +18,10 @@ module.exports = (sequelize) => {
 		{
 			totalPrice: DataTypes.INTEGER,
 			notes: DataTypes.STRING,
+			isReviewed: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			},
 			status: {
 				type: DataTypes.ENUM(
 					'PENDING',

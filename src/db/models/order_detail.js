@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
 					key: 'id',
 					model: 'order',
 				},
-				primaryKey: true,
+				allowNull: false,
 			},
 			productId: {
 				type: DataTypes.INTEGER,
@@ -28,7 +28,7 @@ module.exports = (sequelize) => {
 					key: 'id',
 					model: 'product',
 				},
-				primaryKey: true,
+				allowNull: false,
 			},
 			price: {
 				type: DataTypes.INTEGER,
