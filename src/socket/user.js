@@ -73,14 +73,11 @@ const sendMessage = async (newMessage) => {
 
 		const returnedMessage = message.get();
 
-		console.log('before fin Room');
-
 		const room = await Room.findByPk(newMessage.roomId, {
 			transaction: t,
 			lock: true,
 		});
 
-		console.log(' check Room', room);
 		const members = await room.getMembers();
 		if (!members.map((m) => m.id).includes(newMessage.senderId)) {
 			throw new Error('User not in room');
@@ -91,9 +88,7 @@ const sendMessage = async (newMessage) => {
 			transaction: t,
 		});
 
-		returnedMessage.sender = await message.getSender({
-			raw: true,
-		});
+		returnedMessage.sender = await message.getSender();
 		return returnedMessage;
 	});
 	return createdMessage;

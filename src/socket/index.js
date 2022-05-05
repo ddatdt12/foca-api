@@ -63,7 +63,6 @@ const ConnectSocket = (server) => {
 		socket.on('get_not_seen_conversations', async (cb) => {
 			try {
 				const notSeenRoomIds = await getNotSeenRooms();
-				console.log('get_not_seen_conversations: ', notSeenRoomIds);
 				typeof cb === 'function' && cb(notSeenRoomIds);
 			} catch (error) {
 				console.log('Error get_not_seen_conversations: ', error);
@@ -81,7 +80,6 @@ const ConnectSocket = (server) => {
 			}
 		});
 		socket.on('send_message', async (data, cb) => {
-			console.log('Send message ', data);
 			try {
 				const message = await sendMessage(JSON.parse(data));
 				const members = await getRoomMembers(message.roomId);
@@ -91,7 +89,6 @@ const ConnectSocket = (server) => {
 							io.to(member.id).emit('received_message', message);
 						}
 					});
-				console.log('members', members);
 				cb({ data: message, error: null });
 			} catch (error) {
 				console.log('Error send message', error);
@@ -112,7 +109,7 @@ const ConnectSocket = (server) => {
 			console.log('Client disconnected: ' + socket.userId);
 		});
 	});
-	testFunction();
+	// testFunction();
 };
 
 const sort = (array) => {
@@ -129,15 +126,15 @@ const sort = (array) => {
 
 const testFunction = async () => {
 	try {
-		const notSeenRoomIds = await getNotSeenRooms();
-		console.log('notSeenRoomIds: ', notSeenRoomIds);
+		// const notSeenRoomIds = await getNotSeenRooms();
+		// // console.log('notSeenRoomIds: ', notSeenRoomIds);
 		// const message = await sendMessage({
 		// 	roomId: 8,
 		// 	senderId: 3,
-		// 	text: 'Testtt  2',
+		// 	text: 'Testtt3',
 		// });
-
-		// await seenMessage(8);
+		// console.log('message: ', JSON.stringify(message, null, 2));
+		// console.log('sender full fame: ', message.sender.fullName);
 		// getRoomWithAdmin(3)
 		// 	.then((data) => {
 		// 		console.log('getRoomWithAdmin', JSON.stringify(data, null, 2));
