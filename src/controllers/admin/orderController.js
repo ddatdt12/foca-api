@@ -67,13 +67,13 @@ const getOrderDetail = catchAsync(async (req, res) => {
 //@desc         Update order status
 //@route        POST /api/orders/:orderId
 //@access       PUBLIC
-const updateOrderStatus = catchAsync(async (req, res, next) => {
+const updateOrderStatus = catchAsync(async (req, res) => {
 	const { status } = req.body;
 	const order = await Order.update(
 		{ status },
 		{
 			where: {
-				id: req.params.orderId,
+				id: req.params.id,
 			},
 		}
 	);
