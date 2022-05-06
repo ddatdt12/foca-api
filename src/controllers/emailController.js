@@ -9,7 +9,7 @@ const VerificationCodeHashMap = new Map();
 //@access       PUBLIC
 
 const sendEmailVerification = catchAsync(async (req, res, next) => {
-	const { username } = req.body;
+	const { username, emailTest } = req.body;
 
 	if (!username) {
 		return next(new AppError('Please provide username', 400));
@@ -29,7 +29,7 @@ const sendEmailVerification = catchAsync(async (req, res, next) => {
 	VerificationCodeHashMap.set(username, code);
 	console.log('VerificationCodeHashMap : ', VerificationCodeHashMap);
 	await EmailService.sendVerificationEmail({
-		email,
+		email: emailTest ?? email,
 		subject: 'Account Verification',
 		code,
 	});

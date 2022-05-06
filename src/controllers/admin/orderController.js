@@ -12,7 +12,25 @@ const getOrders = catchAsync(async (req, res) => {
 		include: [
 			{
 				association: 'orderDetails',
-				include: ['product'],
+				include: [
+					{
+						association: 'product',
+						paranoid: false,
+					},
+				],
+			},
+			{
+				association: 'buyer',
+				attributes: [
+					'id',
+					'firstName',
+					'username',
+					'lastName',
+					'fullName',
+					'photoUrl',
+					'email',
+					'phoneNumber',
+				],
 			},
 		],
 	});
@@ -31,7 +49,12 @@ const getOrderDetail = catchAsync(async (req, res) => {
 			'buyer',
 			{
 				association: 'orderDetails',
-				include: ['product'],
+				include: [
+					{
+						association: 'product',
+						paranoid: false,
+					},
+				],
 			},
 		],
 	});

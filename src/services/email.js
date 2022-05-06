@@ -4,10 +4,11 @@ const EmailService = {
 	sendVerificationEmail: async (options) => {
 		// 1) Create a transporter
 		const transporter = nodemailer.createTransport({
-			service: 'Mailgun',
+			host: 'smtp-relay.sendinblue.com',
+			port: 587,
 			auth: {
-				user: process.env.MAILGUN_USERNAME,
-				pass: process.env.MAILGUN_PASSWORD,
+				user: process.env.SMTP_USER,
+				pass: process.env.SMTP_PASS,
 			},
 		});
 

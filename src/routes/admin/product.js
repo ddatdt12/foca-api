@@ -9,9 +9,9 @@ router
 	.get(filterGetProductsQuery, productController.getAllProducts)
 	.post(productController.createProduct);
 
-// router
-// 	.route('/:id')
-// 	.put(productController.getProduct)
-// 	.delete(productController.deleteProduct);
+router
+	.route('/:id')
+	.put(productController.updateProduct)
+	.delete(productController.deteteProduct);
 
 module.exports = router;

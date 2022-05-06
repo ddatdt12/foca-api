@@ -1,15 +1,15 @@
-const { Product, OrderDetail } = require('../../db/models');
+const { Product } = require('../../db/models');
 const catchAsync = require('../../utils/catchAsync');
 const { cleanupQuery } = require('../../validator/query');
 
 //@desc         FOR TESTING: Login = uid
 //@route        POST /api/products
 //@access       PUBLIC
-const getAllProducts = catchAsync(async (req, res, next) => {
-	const filterQuery = cleanupQuery(req.query);
+const getAllProducts = catchAsync(async (req, res) => {
+	const filteredOptions = cleanupQuery(req.query);
 
 	const prods = await Product.findAll({
-		...filterQuery,
+		...filteredOptions,
 	});
 
 	res.status(200).json({
@@ -21,7 +21,7 @@ const getAllProducts = catchAsync(async (req, res, next) => {
 //@desc         Create new product
 //@route        POST /api/products
 //@access       PUBLIC
-const createProduct = catchAsync(async (req, res, next) => {
+const createProduct = catchAsync(async (req, res) => {
 	const prod = await Product.create({
 		...req.body,
 	});
@@ -30,20 +30,29 @@ const createProduct = catchAsync(async (req, res, next) => {
 		data: prod,
 	});
 });
+
 //@desc         update product
-//@route        POST /api/products
+//@route        POST /api/admin/products/:id
 //@access       PUBLIC
-const updateProduct = catchAsync(async (req, res, next) => {
-	const prod = await Product.create({
-		...req.body,
-	});
+const updateProduct = catchAsync(async (req, res) => {
+	const prod = await Product.update(
+		{
+			...req.body,
+		},
+		{
+			where: {
+				id: req.params.id,
+			},
+		}
+	);
 	res.status(200).json({
 		message: 'update product successfully',
 		data: prod,
 	});
 });
-//@desc         Create new product
-//@route        POST /api/products
+
+//@desc         delete product
+//@route        DELETE /api/admin/products/:id
 //@access       PUBLIC
 const deteteProduct = catchAsync(async (req, res) => {
 	const prod = await Product.destroy({
