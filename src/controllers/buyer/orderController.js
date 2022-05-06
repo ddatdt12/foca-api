@@ -1,4 +1,4 @@
-const { sequelize, Order, OrderDetail } = require('../../db/models');
+const { sequelize, Order, OrderDetail, Product } = require('../../db/models');
 const catchAsync = require('../../utils/catchAsync');
 
 //@desc         get orders
@@ -92,9 +92,28 @@ const createOrder = catchAsync(async (req, res, next) => {
 				...p,
 				orderId: order.id,
 			})),
-			{ transaction: t }
+			{
+				transaction: t,
+				include: [
+					{
+						model: Product,
+						as: 'product',
+					},
+				],
+			}
 		);
-		order.orderDetails = orderDetails;
+
+		let includedOrderDetails = await Promise.all(
+			orderDetails.map(async (o) => {
+				o.setDataValue('product', await o.getProduct());
+				return o;
+			})
+		);
+		// for (const order of orderDetails) {
+		// 	await order.getProduct();
+		// }
+
+		order.setDataValue('orderDetails', includedOrderDetails);
 		return order;
 	});
 
