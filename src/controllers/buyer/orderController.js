@@ -109,9 +109,6 @@ const createOrder = catchAsync(async (req, res, next) => {
 				return o;
 			})
 		);
-		// for (const order of orderDetails) {
-		// 	await order.getProduct();
-		// }
 
 		order.setDataValue('orderDetails', includedOrderDetails);
 		return order;

@@ -22,14 +22,20 @@ module.exports = (sequelize) => {
 				type: DataTypes.BOOLEAN,
 				defaultValue: false,
 			},
+			surcharge: {
+				type: DataTypes.INTEGER,
+				defaultValue: 0,
+				allowNull: false,
+			},
 			status: {
 				type: DataTypes.ENUM(
+					'ARRIVED',
 					'PENDING',
-					'PROCCESSED',
+					'PROCESSED',
 					'COMPLETED',
 					'CANCELLED'
 				),
-				defaultValue: 'PENDING',
+				defaultValue: 'ARRIVED',
 			},
 		},
 		{

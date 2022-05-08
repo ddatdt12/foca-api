@@ -19,15 +19,21 @@ module.exports = {
 			totalPrice: {
 				type: Sequelize.INTEGER,
 			},
+			surcharge: {
+				type: Sequelize.INTEGER,
+				defaultValue: 0,
+				allowNull: false,
+			},
 			notes: Sequelize.STRING,
 			status: {
 				type: Sequelize.ENUM(
+					'ARRIVED',
 					'PENDING',
 					'PROCESSED',
 					'COMPLETED',
 					'CANCELLED'
 				),
-				defaultValue: 'PENDING',
+				defaultValue: 'ARRIVED',
 			},
 			isReviewed: {
 				type: Sequelize.BOOLEAN,

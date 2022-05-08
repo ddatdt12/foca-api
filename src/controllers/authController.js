@@ -9,7 +9,6 @@ const { User } = require('../db/models');
 const login = catchAsync(async (req, res, next) => {
 	const { username, password } = req.body;
 
-	console.log('login', req.body);
 	const user = await User.findOne({
 		where: {
 			username: username ?? null,
