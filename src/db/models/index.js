@@ -40,4 +40,5 @@ db.Message = require('./message')(sequelize);
 db.RoomMember = require('./room_member')(sequelize);
 db.InterestProduct = require('./interest_product')(sequelize);
 db.Review = require('./review')(sequelize);
+db.Notification = require('./notification')(sequelize);
 module.exports = db;

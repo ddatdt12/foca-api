@@ -9,6 +9,7 @@ const {
 	RoomMember,
 	InterestProduct,
 	Review,
+	Notification,
 } = require('.');
 
 const associate = () => {
@@ -74,6 +75,10 @@ const associate = () => {
 		foreignKey: 'orderDetailId',
 	});
 	Review.belongsTo(User, { as: 'user' });
+
+	//User - 1:n - Notification
+	User.hasMany(Notification, { as: 'notifications' });
+	Notification.belongsTo(User, { as: 'user' });
 };
 
 module.exports = associate;

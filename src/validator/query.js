@@ -30,8 +30,9 @@ const filterGetProductsQuery = (req, res, next) => {
 const filterGetOrdersQuery = (req, res, next) => {
 	let schema = Joi.object({
 		status: Joi.string().valid(
+			'ARRIVED',
 			'PENDING',
-			'PROCCESSED',
+			'PROCESSED',
 			'COMPLETED',
 			'CANCELLED'
 		),

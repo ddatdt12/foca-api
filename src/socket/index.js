@@ -1,11 +1,13 @@
 const { ValidationError } = require('sequelize');
 const { Server } = require('socket.io');
+const { validateNotiData } = require('../validator/notification');
 const {
 	getRooms,
 	getMessages,
 	seenMessage,
 	getNotSeenRooms,
 } = require('./admin');
+const { createNotification } = require('./notification');
 const {
 	getMessagesWithAdmin,
 	sendMessage,
@@ -105,6 +107,33 @@ const ConnectSocket = (server) => {
 			}
 		});
 
+		//Notification
+		socket.on('send_notification', async (data, cb) => {
+			try {
+				const noti = await createNotification(data);
+				io.to(noti.userId).emit('received_notification', noti);
+				cb(null);
+			} catch (error) {
+				cb(error.message);
+			}
+		});
+		socket.on('send_notification_for_admin', async (data, cb) => {
+			try {
+				await createNotification(data);
+				cb(null);
+			} catch (error) {
+				cb(error.message);
+			}
+		});
+		socket.on('send_notification', async (data, cb) => {
+			try {
+				await createNotification(data);
+				cb(null);
+			} catch (error) {
+				cb(error.message);
+			}
+		});
+
 		socket.on('disconnect', () => {
 			console.log('Client disconnected: ' + socket.userId);
 		});
@@ -126,6 +155,16 @@ const sort = (array) => {
 
 const testFunction = async () => {
 	try {
+		try {
+			const noti = await createNotification({
+				message: 'Welcome to my app',
+				iconType: 'SUCCESS',
+				userId: 2,
+			});
+			console.log('Noti', JSON.stringify(noti, null, 2));
+		} catch (error) {
+			console.log('createNotification error', error);
+		}
 		// const notSeenRoomIds = await getNotSeenRooms();
 		// // console.log('notSeenRoomIds: ', notSeenRoomIds);
 		// const message = await sendMessage({
