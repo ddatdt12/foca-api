@@ -1,12 +1,6 @@
-const {
-	User,
-	Review,
-	sequelize,
-	Order,
-	Notification,
-} = require('../../db/models');
-const AppError = require('../../utils/AppError');
+const { Notification } = require('../../db/models');
 const catchAsync = require('../../utils/catchAsync');
+const { validateNotiData } = require('../../validator/notification');
 
 //@desc        	Create review
 //@route        POST /api/buyer/notifications
@@ -18,6 +12,18 @@ const getNotifications = catchAsync(async (req, res, next) => {
 	res.status(200).json({
 		message: 'get notifications successfully',
 		data: notis,
+	});
+});
+
+//@desc        	Create review
+//@route        POST /api/buyer/notifications
+//@access       PUBLIC
+const createNotification = catchAsync(async (req, res, next) => {
+	const value = validateNotiData(req.body);
+	const noti = await Notification.create(value);
+	res.status(200).json({
+		message: 'get notifications successfully',
+		data: noti,
 	});
 });
 
@@ -42,4 +48,5 @@ const markAllSeenNotification = catchAsync(async (req, res, next) => {
 module.exports = {
 	getNotifications,
 	markAllSeenNotification,
+	createNotification,
 };
