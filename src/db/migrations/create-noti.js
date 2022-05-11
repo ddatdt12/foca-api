@@ -32,6 +32,14 @@ module.exports = {
 					model: 'user',
 				},
 			},
+			orderId: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					key: 'id',
+					model: 'order',
+				},
+			},
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,

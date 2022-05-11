@@ -5,6 +5,7 @@ const validateNotiData = (data) => {
 		message: Joi.string().required(),
 		iconType: Joi.string().valid('SUCCESS', 'MONEY', 'ERROR').required(),
 		userId: Joi.number().required(),
+		orderId: Joi.number().required(),
 	});
 
 	const options = {
