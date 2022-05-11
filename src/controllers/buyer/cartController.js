@@ -4,7 +4,7 @@ const catchAsync = require('../../utils/catchAsync');
 //@desc         get my cart
 //@route        GET /api/me/cart-items
 //@access       PRIVATE
-const getCart = catchAsync(async (req, res) => {
+const getCarts = catchAsync(async (req, res) => {
 	const cart = await CartItem.findAll({
 		where: {
 			userId: req.user.id,
@@ -96,4 +96,4 @@ const deleteCartItem = catchAsync(async (req, res, next) => {
 	});
 });
 
-module.exports = { getCart, createCartItem, updateCartItem, deleteCartItem };
+module.exports = { getCarts, createCartItem, updateCartItem, deleteCartItem };

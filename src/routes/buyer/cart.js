@@ -5,7 +5,7 @@ const cartController = require('../../controllers/buyer/cartController');
 
 router
 	.route('/')
-	.get(cartController.getCart)
+	.get(cartController.getCarts)
 	.post(cartController.createCartItem);
 router
 	.route('/:id')

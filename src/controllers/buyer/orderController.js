@@ -1,4 +1,10 @@
-const { sequelize, Order, OrderDetail, Product } = require('../../db/models');
+const {
+	sequelize,
+	Order,
+	OrderDetail,
+	Product,
+	CartItem,
+} = require('../../db/models');
 const catchAsync = require('../../utils/catchAsync');
 
 //@desc         get orders
@@ -73,6 +79,11 @@ const getOrderDetail = catchAsync(async (req, res) => {
 //@route        POST /api/orders
 //@access       PUBLIC
 const createOrder = catchAsync(async (req, res, next) => {
+	const cartItems = await CartItem.findAll({
+		where: {
+			userId: req.user.id,
+		},
+	});
 	const totalPrice = req.body.orderDetails.reduce(
 		(acc, cur) => acc + cur.price * cur.quantity,
 		0

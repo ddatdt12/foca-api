@@ -12,7 +12,7 @@ router.route('/recent').get(orderController.getRecentOrders);
 router
 	.route('/')
 	.get(filterGetOrdersQuery, orderController.getOrders)
-	.post(createOrderSchema, orderController.createOrder);
+	.post(orderController.createOrder);
 router
 	.route('/:orderId')
 	.get(orderController.getOrderDetail)
