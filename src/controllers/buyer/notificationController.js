@@ -8,6 +8,7 @@ const { validateNotiData } = require('../../validator/notification');
 const getNotifications = catchAsync(async (req, res, next) => {
 	const notis = await Notification.findAll({
 		where: { userId: req.user.id, ...req.query },
+		include: 'order',
 	});
 	res.status(200).json({
 		message: 'get notifications successfully',
