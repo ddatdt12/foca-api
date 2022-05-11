@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Utils = {
 	comparePassword: async (myPlaintextPassword, hash) => {
 		if (!myPlaintextPassword || !hash) return false;

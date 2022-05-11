@@ -14,6 +14,7 @@ const sendEmailVerification = catchAsync(async (req, res, next) => {
 	if (!username) {
 		return next(new AppError('Please provide username', 400));
 	}
+
 	const user = await User.findOne({
 		where: {
 			username,

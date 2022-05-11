@@ -1,11 +1,9 @@
 const Joi = require('joi');
-const { Sequelize } = require('../db/models');
 
 const validateNotiData = (data) => {
 	let schema = Joi.object({
 		message: Joi.string().required(),
 		iconType: Joi.string().valid('SUCCESS', 'MONEY', 'ERROR').required(),
-		isSeen: Joi.boolean().default(false),
 		userId: Joi.number().required(),
 	});
 

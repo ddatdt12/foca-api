@@ -28,7 +28,7 @@ const createNotification = catchAsync(async (req, res, next) => {
 });
 
 //@desc        	Create review
-//@route        POST /api/buyer/notifications
+//@route        GET /api/buyer/notifications
 //@access       PUBLIC
 const markAllSeenNotification = catchAsync(async (req, res, next) => {
 	const data = await Notification.update(

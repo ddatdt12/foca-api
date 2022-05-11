@@ -6,7 +6,6 @@ const morgan = require('morgan');
 const globalErrorHandler = require('./src/middlewares/globalErrorHandler');
 const fs = require('fs');
 const path = require('path');
-const http = require('http');
 const AppError = require('./src/utils/AppError');
 const associate = require('./src/db/models/association');
 require('./src/db/models');
@@ -27,7 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.get('/', (req, res) => {
-	res.send('hello Foca');
+	res.send('hello Foca 123');
 });
 
 // Require all routes

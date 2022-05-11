@@ -1,6 +1,4 @@
-const { ValidationError } = require('sequelize');
 const { Server } = require('socket.io');
-const { validateNotiData } = require('../validator/notification');
 const {
 	getRooms,
 	getMessages,
@@ -8,14 +6,7 @@ const {
 	getNotSeenRooms,
 } = require('./admin');
 const { createNotification } = require('./notification');
-const {
-	getMessagesWithAdmin,
-	sendMessage,
-	getRoomWithAdmin,
-	getRoomMembers,
-} = require('./user');
-
-const activeUsers = new Map();
+const { sendMessage, getRoomWithAdmin, getRoomMembers } = require('./user');
 
 const ConnectSocket = (server) => {
 	const io = new Server(server, {
@@ -107,30 +98,26 @@ const ConnectSocket = (server) => {
 			}
 		});
 
-		//Notification
-		socket.on('send_notification', async (data, cb) => {
-			try {
-				const noti = await createNotification(data);
-				io.to(noti.userId).emit('received_notification', noti);
-				cb(null);
-			} catch (error) {
-				cb(error.message);
-			}
-		});
 		socket.on('send_notification_for_admin', async (data, cb) => {
 			try {
 				await createNotification(data);
+
 				cb(null);
 			} catch (error) {
 				cb(error.message);
 			}
 		});
-		socket.on('send_notification', async (data, cb) => {
+		socket.on('send_notification', async (data) => {
 			try {
-				await createNotification(data);
-				cb(null);
+				console.log('Data send_notification', data);
+				const noti = await createNotification(JSON.parse(data));
+				console.log('Noti', noti);
+
+				io.to(noti.userId).emit('received_notification', noti);
+
+				// cb?.(null);
 			} catch (error) {
-				cb(error.message);
+				console.log('send_notification', error.message);
 			}
 		});
 
@@ -165,30 +152,6 @@ const testFunction = async () => {
 		} catch (error) {
 			console.log('createNotification error', error);
 		}
-		// const notSeenRoomIds = await getNotSeenRooms();
-		// // console.log('notSeenRoomIds: ', notSeenRoomIds);
-		// const message = await sendMessage({
-		// 	roomId: 8,
-		// 	senderId: 3,
-		// 	text: 'Testtt3',
-		// });
-		// console.log('message: ', JSON.stringify(message, null, 2));
-		// console.log('sender full fame: ', message.sender.fullName);
-		// getRoomWithAdmin(3)
-		// 	.then((data) => {
-		// 		console.log('getRoomWithAdmin', JSON.stringify(data, null, 2));
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log('Error get messages with admin', err);
-		// 		if (err instanceof ValidationError) {
-		// 			const errorMessage = Object.values(err.errors)
-		// 				.map((el) => {
-		// 					return el;
-		// 				})
-		// 				.join(' \n');
-		// 			console.log('Error message', errorMessage);
-		// 		}
-		// 	});
 	} catch (error) {
 		console.log('Error', error);
 	}
