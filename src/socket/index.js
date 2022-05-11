@@ -5,13 +5,16 @@ const {
 	seenMessage,
 	getNotSeenRooms,
 } = require('./admin');
+const { User } = require('../db/models');
 const { createNotification } = require('./notification');
 const { sendMessage, getRoomWithAdmin, getRoomMembers } = require('./user');
 
 const ConnectSocket = (server) => {
+	let admin;
 	const io = new Server(server, {
 		cors: { origin: true, credentials: true },
 	});
+
 	io.use((socket, next) => {
 		if (socket.handshake.auth.token) {
 			//Just simple authentication
@@ -30,10 +33,15 @@ const ConnectSocket = (server) => {
 		console.log('Socket UserId', socket.userId);
 		socket.join(socket.userId);
 
-		socket.on('join_room', (data) => {
-			console.log('Data ', data);
-			socket.emit('send_message', data);
-		});
+		if (!admin) {
+			User.findOne({
+				where: {
+					role: 'ADMIN',
+				},
+			}).then((user) => {
+				admin = user;
+			});
+		}
 		socket.on('get_rooms', async (cb) => {
 			try {
 				const rooms = await getRooms();
@@ -100,24 +108,32 @@ const ConnectSocket = (server) => {
 
 		socket.on('send_notification_for_admin', async (data, cb) => {
 			try {
-				await createNotification(data);
-
-				cb(null);
+				if (!admin) {
+					admin = await User.findOne({
+						where: {
+							role: 'ADMIN',
+						},
+					});
+				}
+				const noti = await createNotification({
+					...JSON.parse(data),
+					userId: admin.id,
+				});
+				io.to(admin.id).emit('received_notification', noti);
+				cb?.(null);
 			} catch (error) {
-				cb(error.message);
+				cb?.(error.message);
 			}
 		});
-		socket.on('send_notification', async (data) => {
+		socket.on('send_notification', async (data, cb) => {
 			try {
-				console.log('Data send_notification', data);
 				const noti = await createNotification(JSON.parse(data));
-				console.log('Noti', noti);
 
 				io.to(noti.userId).emit('received_notification', noti);
-
-				// cb?.(null);
+				cb?.(null);
 			} catch (error) {
 				console.log('send_notification', error.message);
+				cb?.(error.message);
 			}
 		});
 
@@ -125,35 +141,24 @@ const ConnectSocket = (server) => {
 			console.log('Client disconnected: ' + socket.userId);
 		});
 	});
-	// testFunction();
+	// testFunction(admin);
 };
 
-const sort = (array) => {
-	for (let i = 0; i < array.length - 1; i++) {
-		for (let j = i + 1; j < array.length; j++) {
-			if (!array[i].isOnline && array[j].isOnline) {
-				const temp = array[i];
-				array[i] = array[j];
-				array[j] = temp;
-			}
-		}
-	}
-};
-
-const testFunction = async () => {
-	try {
-		try {
-			const noti = await createNotification({
-				message: 'Welcome to my app',
-				iconType: 'SUCCESS',
-				userId: 2,
-			});
-			console.log('Noti', JSON.stringify(noti, null, 2));
-		} catch (error) {
-			console.log('createNotification error', error);
-		}
-	} catch (error) {
-		console.log('Error', error);
-	}
+const testFunction = async (admin) => {
+	console.log(admin);
+	// try {
+	// 	try {
+	// 		const noti = await createNotification({
+	// 			message: 'Welcome to my app',
+	// 			iconType: 'SUCCESS',
+	// 			userId: 2,
+	// 		});
+	// 		console.log('Noti', JSON.stringify(noti, null, 2));
+	// 	} catch (error) {
+	// 		console.log('createNotification error', error);
+	// 	}
+	// } catch (error) {
+	// 	console.log('Error', error);
+	// }
 };
 module.exports = ConnectSocket;

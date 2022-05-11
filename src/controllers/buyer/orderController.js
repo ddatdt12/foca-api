@@ -5,6 +5,7 @@ const {
 	Product,
 	CartItem,
 } = require('../../db/models');
+const AppError = require('../../utils/AppError');
 const catchAsync = require('../../utils/catchAsync');
 
 //@desc         get orders
@@ -79,19 +80,31 @@ const getOrderDetail = catchAsync(async (req, res) => {
 //@route        POST /api/orders
 //@access       PUBLIC
 const createOrder = catchAsync(async (req, res, next) => {
+	const { notes } = req.body;
 	const cartItems = await CartItem.findAll({
 		where: {
 			userId: req.user.id,
 		},
+		include: ['product'],
 	});
-	const totalPrice = req.body.orderDetails.reduce(
+
+	const orderDetailsFromCart = cartItems.map((cartItem) => ({
+		productId: cartItem.productId,
+		price: cartItem.product.price,
+		quantity: cartItem.quantity,
+	}));
+	if (cartItems.length === 0) {
+		return next(new AppError('Your cart is empty', 400));
+	}
+
+	const totalPrice = orderDetailsFromCart.reduce(
 		(acc, cur) => acc + cur.price * cur.quantity,
 		0
 	);
 	const result = await sequelize.transaction(async (t) => {
 		const order = await Order.create(
 			{
-				...req.body,
+				notes,
 				totalPrice,
 				buyerId: req.user.id,
 			},
@@ -99,7 +112,7 @@ const createOrder = catchAsync(async (req, res, next) => {
 		);
 
 		const orderDetails = await OrderDetail.bulkCreate(
-			req.body.orderDetails.map((p) => ({
+			orderDetailsFromCart.map((p) => ({
 				...p,
 				orderId: order.id,
 			})),
@@ -114,14 +127,14 @@ const createOrder = catchAsync(async (req, res, next) => {
 			}
 		);
 
-		let includedOrderDetails = await Promise.all(
-			orderDetails.map(async (o) => {
-				o.setDataValue('product', await o.getProduct());
-				return o;
-			})
-		);
+		await CartItem.destroy({
+			where: {
+				userId: req.user.id,
+			},
+			transaction: t,
+		});
 
-		order.setDataValue('orderDetails', includedOrderDetails);
+		order.setDataValue('orderDetails', orderDetails);
 		return order;
 	});
 
