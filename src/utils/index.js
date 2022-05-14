@@ -44,5 +44,11 @@ const Utils = {
 		const re = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 		return re.test(email);
 	},
+	convertArrayToMap(array, key) {
+		if (!Array.isArray(array)) {
+			throw new Error('The first argument must be an array');
+		}
+		return new Map(array.map((item) => [item[key], item]));
+	},
 };
 module.exports = Utils;
