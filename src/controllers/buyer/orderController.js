@@ -170,6 +170,7 @@ const createOrder = catchAsync(async (req, res, next) => {
 //@access       PRIVATE
 const updateOrderStatus = catchAsync(async (req, res, next) => {
 	const { status } = req.body;
+
 	const admin = await User.findOne({
 		where: {
 			role: 'ADMIN',
@@ -184,9 +185,15 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 		}
 	);
 
-	// global.io
-	// ?.to(admin.notification.userId)
-	// .emit('received_notification', result.notification);
+	if (status === 'CANCELLED') {
+		const noti = await Notification.create({
+			message: `Customer has cancelled the order: #${req.params.orderId}`,
+			iconType: 'CANCELLED',
+			userId: admin.id,
+		});
+
+		global.io.to(noti.userId).emit('received_notification', noti);
+	}
 
 	res.status(200).json({
 		message: 'Create post successfully',

@@ -1,4 +1,4 @@
-const { Order } = require('../../db/models');
+const { Order, Notification } = require('../../db/models');
 const AppError = require('../../utils/AppError');
 const catchAsync = require('../../utils/catchAsync');
 const { cleanupQuery } = require('../../validator/query');
@@ -84,8 +84,41 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 		order.totalPrice = order.totalPrice - order.surcharge + surcharge;
 		order.surcharge = surcharge;
 	}
+	const notiData = {
+		userId: order.userId,
+	};
 
-	await order.save();
+	const yourOrderString = `Your order #${order.id}`;
+	switch (status) {
+		case 'PENDING':
+			notiData.message =
+				yourOrderString +
+				'needs to be confirmed because of the extra cost';
+			notiData.iconType = 'MONEY';
+			break;
+		case 'PROCESSING':
+			notiData.message =
+				yourOrderString +
+				'is in progress and will be delivered in a few minutes';
+			notiData.iconType = 'SUCCESS';
+			break;
+		case 'COMPLETED':
+			notiData.message = yourOrderString + 'is successful!';
+			notiData.iconType = 'SUCCESS';
+			break;
+		case 'CANCELLED':
+			notiData.message = yourOrderString + ` has been cancelled`;
+			notiData.iconType = 'CANCELLED';
+			break;
+		default:
+			break;
+	}
+	const [, noti] = await Promise.all([
+		order.save(),
+		Notification.create(notiData),
+	]);
+	global.io.to(noti.userId).emit('received_notification', noti);
+
 	res.status(200).json({
 		message: 'Update order successfully',
 		data: order,
