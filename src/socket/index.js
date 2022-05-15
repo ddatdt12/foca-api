@@ -14,7 +14,7 @@ const ConnectSocket = (server) => {
 	const io = new Server(server, {
 		cors: { origin: true, credentials: true },
 	});
-
+	global.io = io;
 	io.use((socket, next) => {
 		if (socket.handshake.auth.token) {
 			//Just simple authentication

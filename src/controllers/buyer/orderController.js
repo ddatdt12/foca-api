@@ -4,6 +4,8 @@ const {
 	OrderDetail,
 	Product,
 	CartItem,
+	Notification,
+	User,
 } = require('../../db/models');
 const AppError = require('../../utils/AppError');
 const catchAsync = require('../../utils/catchAsync');
@@ -126,6 +128,22 @@ const createOrder = catchAsync(async (req, res, next) => {
 				],
 			}
 		);
+		const admin = await User.findOne({
+			where: {
+				role: 'ADMIN',
+			},
+		});
+		const noti = await Notification.create(
+			{
+				message: `You have a new order #${order.id}!`,
+				iconType: 'SUCCESS',
+				userId: admin.id,
+				orderId: order.id,
+			},
+			{
+				transaction: t,
+			}
+		);
 
 		await CartItem.destroy({
 			where: {
@@ -135,12 +153,15 @@ const createOrder = catchAsync(async (req, res, next) => {
 		});
 
 		order.setDataValue('orderDetails', orderDetails);
-		return order;
+		return { order, notification: noti };
 	});
+	global.io
+		?.to(result.notification.userId)
+		.emit('new_order_notification', result.notification);
 
 	res.status(200).json({
 		message: 'Create post successfully',
-		data: result,
+		data: result.order,
 	});
 });
 
