@@ -108,7 +108,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 			break;
 		case 'CANCELLED':
 			notiData.message = yourOrderString + ` has been cancelled`;
-			notiData.iconType = 'CANCELLED';
+			notiData.iconType = 'ERROR';
 			break;
 		default:
 			break;

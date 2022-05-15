@@ -135,7 +135,7 @@ const createOrder = catchAsync(async (req, res, next) => {
 		});
 		const noti = await Notification.create(
 			{
-				message: `You have a new order #${order.id}!`,
+				message: `Great! You have a new order! Order: #${order.id}!`,
 				iconType: 'SUCCESS',
 				userId: admin.id,
 				orderId: order.id,
@@ -192,7 +192,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 			userId: admin.id,
 		});
 
-		global.io.to(noti.userId).emit('received_notification', noti);
+		global.io?.to(noti.userId)?.emit('received_notification', noti);
 	}
 
 	res.status(200).json({
