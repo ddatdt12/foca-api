@@ -190,6 +190,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 			message: `Customer has cancelled the order: #${req.params.orderId}`,
 			iconType: 'ERROR',
 			userId: admin.id,
+			orderId: order.id,
 		});
 
 		global.io?.to(noti.userId)?.emit('received_notification', noti);

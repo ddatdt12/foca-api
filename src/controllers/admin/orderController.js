@@ -86,6 +86,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 	}
 	const notiData = {
 		userId: order.buyerId,
+		orderId: order.id,
 	};
 
 	const yourOrderString = `Your order #${order.id}`;
