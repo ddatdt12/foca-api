@@ -85,7 +85,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 		order.surcharge = surcharge;
 	}
 	const notiData = {
-		userId: order.userId,
+		userId: order.buyerId,
 	};
 
 	const yourOrderString = `Your order #${order.id}`;
