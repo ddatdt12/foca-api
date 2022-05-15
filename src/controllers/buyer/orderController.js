@@ -157,7 +157,7 @@ const createOrder = catchAsync(async (req, res, next) => {
 	});
 	global.io
 		?.to(result.notification.userId)
-		.emit('new_order_notification', result.notification);
+		.emit('received_notification', result.notification);
 
 	res.status(200).json({
 		message: 'Create post successfully',
@@ -166,10 +166,15 @@ const createOrder = catchAsync(async (req, res, next) => {
 });
 
 //@desc         Update order status
-//@route        POST /api/orders/:orderId
-//@access       PUBLIC
+//@route        PUT /api/orders/:orderId
+//@access       PRIVATE
 const updateOrderStatus = catchAsync(async (req, res, next) => {
 	const { status } = req.body;
+	const admin = await User.findOne({
+		where: {
+			role: 'ADMIN',
+		},
+	});
 	const order = await Order.update(
 		{ status },
 		{
@@ -178,6 +183,11 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 			},
 		}
 	);
+
+	// global.io
+	// ?.to(admin.notification.userId)
+	// .emit('received_notification', result.notification);
+
 	res.status(200).json({
 		message: 'Create post successfully',
 		data: order,
