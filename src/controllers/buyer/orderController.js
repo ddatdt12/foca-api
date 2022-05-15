@@ -188,7 +188,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 	if (status === 'CANCELLED') {
 		const noti = await Notification.create({
 			message: `Customer has cancelled the order: #${req.params.orderId}`,
-			iconType: 'CANCELLED',
+			iconType: 'ERROR',
 			userId: admin.id,
 		});
 
@@ -196,7 +196,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 	}
 
 	res.status(200).json({
-		message: 'Create post successfully',
+		message: 'Update order status successfully',
 		data: order,
 	});
 });
