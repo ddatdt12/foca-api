@@ -32,5 +32,9 @@ module.exports = (sequelize) => {
 			timestamps: true,
 		}
 	);
+
+	Product.addHook('beforeDestroy', (product) => {
+		console.log('beforeDestroy Product: ', product);
+	});
 	return Product;
 };

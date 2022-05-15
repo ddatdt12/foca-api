@@ -8,6 +8,7 @@ router
 	.route('/')
 	.get(filterGetProductsQuery, productController.getAllProducts)
 	.post(productController.createProduct);
+router.post('/batch-restore', productController.restoreProduct);
 
 router
 	.route('/:id')

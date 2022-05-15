@@ -11,6 +11,7 @@ const getCarts = catchAsync(async (req, res) => {
 		},
 		include: 'product',
 	});
+
 	res.status(200).json({
 		message: 'Get user cart successfully',
 		data: cart,
