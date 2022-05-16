@@ -91,9 +91,7 @@ const deleteCartItem = catchAsync(async (req, res, next) => {
 
 	res.status(200).json({
 		message: 'delete item successfully',
-		data: {
-			num: itemsDeletedNum,
-		},
+		data: itemsDeletedNum,
 	});
 });
 

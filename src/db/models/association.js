@@ -79,7 +79,7 @@ const associate = () => {
 	//User - 1:n - Notification
 	User.hasMany(Notification, { as: 'notifications' });
 	Notification.belongsTo(User, { as: 'user' });
-	Notification.belongsTo(Order, { as: 'order' });
+	Notification.belongsTo(Order, { as: 'order', onDelete: 'CASCADE' });
 };
 
 module.exports = associate;

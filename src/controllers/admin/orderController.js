@@ -94,21 +94,21 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 		case 'PENDING':
 			notiData.message =
 				yourOrderString +
-				'needs to be confirmed because of the extra cost';
+				' needs to be confirmed because of the extra cost';
 			notiData.iconType = 'MONEY';
 			break;
 		case 'PROCESSING':
 			notiData.message =
 				yourOrderString +
-				'is in progress and will be delivered in a few minutes';
+				' is in progress and will be delivered in a few minutes';
 			notiData.iconType = 'SUCCESS';
 			break;
 		case 'COMPLETED':
-			notiData.message = yourOrderString + 'is successful!';
+			notiData.message = yourOrderString + ' is successful!';
 			notiData.iconType = 'SUCCESS';
 			break;
 		case 'CANCELLED':
-			notiData.message = yourOrderString + ` has been cancelled`;
+			notiData.message = yourOrderString + ' has been cancelled';
 			notiData.iconType = 'ERROR';
 			break;
 		default:
