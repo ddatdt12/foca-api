@@ -12,6 +12,7 @@ module.exports = {
 				rejectUnauthorized: false,
 			},
 			connectTimeout: 1000,
+			decimalNumbers: true,
 		},
 		pool: {
 			// max: 5,
@@ -35,6 +36,7 @@ module.exports = {
 				require: true,
 				rejectUnauthorized: false,
 			},
+			decimalNumbers: true,
 		},
 		pool: {
 			max: 5,
@@ -55,6 +57,7 @@ module.exports = {
 				require: true,
 				rejectUnauthorized: false,
 			},
+			decimalNumbers: true,
 		},
 		pool: {
 			max: 5,

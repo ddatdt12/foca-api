@@ -1,6 +1,57 @@
-const { User, Review, sequelize, Order } = require('../../db/models');
+const { Review, sequelize, Order } = require('../../db/models');
+const { convertArrayToMap } = require('../../utils');
 const AppError = require('../../utils/AppError');
 const catchAsync = require('../../utils/catchAsync');
+
+const getProductReviews = catchAsync(async (req, res) => {
+	const reviews = await Review.findAll({
+		where: {
+			'$orderDetail.productId$': req.params.productId,
+		},
+		include: [
+			{
+				association: 'orderDetail',
+				attributes: [],
+			},
+			{
+				association: 'user',
+			},
+		],
+	});
+	res.status(200).json({
+		message: 'Get all reviews successfully',
+		data: reviews,
+	});
+});
+
+const getProductReviewStats = catchAsync(async (req, res) => {
+	const classifiedReview = await Review.findAll({
+		where: {
+			'$orderDetail.productId$': req.params.productId,
+		},
+		include: [
+			{
+				association: 'orderDetail',
+				attributes: [],
+			},
+		],
+		attributes: [
+			'rating',
+			[sequelize.fn('count', sequelize.col('review.id')), 'quantity'],
+		],
+		group: ['rating'],
+		raw: true,
+	});
+
+	const ratingMap = convertArrayToMap(classifiedReview, 'rating');
+	const result = Array(5).map((_, index) => {
+		return ratingMap.get(index + 1) || { rating: index + 1, quantity: 0 };
+	});
+	res.status(200).json({
+		message: 'Get reviews stats successfully',
+		data: result,
+	});
+});
 
 //@desc        	Create review
 //@route        POST /api/buyer/reviews
@@ -58,4 +109,6 @@ const createReviewForOrder = catchAsync(async (req, res, next) => {
 
 module.exports = {
 	createReviewForOrder,
+	getProductReviewStats,
+	getProductReviews,
 };

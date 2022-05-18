@@ -1,8 +1,9 @@
 const path = require('path');
+const pg = require('pg');
+pg.defaults.parseInt8 = true;
 const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config').development;
 const db = {};
-
 const sequelize = new Sequelize.Sequelize(
 	dbConfig.database,
 	dbConfig.username,

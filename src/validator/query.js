@@ -1,11 +1,19 @@
 const Joi = require('joi');
-const { Sequelize } = require('../db/models');
-
+const { Op } = require('sequelize');
+const { sequelize } = require('../db/models');
 const filterGetProductsQuery = (req, res, next) => {
+	let rangeSchema = Joi.object({
+		gt: Joi.string(),
+		gte: Joi.string(),
+		lt: Joi.string(),
+		lte: Joi.string(),
+	});
 	let schema = Joi.object({
 		type: Joi.string().valid('DRINK', 'FOOD'),
 		limit: Joi.string().default('10'),
+		sort: Joi.string(),
 		q: Joi.string(),
+		price: rangeSchema,
 	});
 
 	const options = {
@@ -71,13 +79,42 @@ const cleanupQuery = (query) => {
 
 	if (query.q) {
 		reqQuery.name = {
-			[Sequelize.Op.iLike]: '%' + query.q + '%',
+			[Op.iLike]: '%' + query.q + '%',
 		};
+	}
+
+	if (query.sort) {
+		const allowedFields = ['rating', 'price'];
+		const sortBy = query.sort.split(',').map((s) => {
+			const typeSort = s.includes('-') ? 'desc' : 'asc';
+			const field = s.replace('-', '').trim();
+			if (!allowedFields.includes(field)) {
+				return ['createdAt', 'desc'];
+			}
+			return [
+				field === 'rating'
+					? sequelize.literal('"averageRating"')
+					: field,
+				typeSort,
+			];
+		});
+		filterQuery.order = sortBy;
+	}
+
+	if (query.price) {
+		Object.keys(reqQuery.price).forEach((key) => {
+			if (reqQuery.price[key]) {
+				const value = reqQuery.price[key];
+				if (!isNaN(value)) {
+					reqQuery['price'][Op[key]] = value;
+				}
+				delete reqQuery.price[key];
+			}
+		});
 	}
 
 	if (query.limit) {
 		filterQuery.limit = parseInt(query.limit);
-		console.log('query.limit check', filterQuery);
 	}
 	filterQuery = {
 		where: {
